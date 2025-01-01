@@ -4,7 +4,6 @@ import pandas as pd
 import requests
 import base64
 import psycopg2
-import os
 
 DATABASE_URL = "postgresql://neondb_owner:gF0iuBzlO5Yk@ep-morning-river-a19sgi22.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 
@@ -12,17 +11,14 @@ def connect_to_db():
     """Establishes a connection to the PostgreSQL database."""
     try:
         conn = psycopg2.connect(DATABASE_URL)
-        st.success("Connected to the database successfully!")
         return conn
-    except Exception as e:
-        st.error(f"Error connecting to the database: {e}")
+    except Exception:
         return None
 
 
 def insert_movie_recommendations(conn, recommendations):
     """Insert movie recommendations into the database table."""
     if conn is None:
-        st.error("Database connection is not established.")
         return
 
     try:
@@ -33,30 +29,11 @@ def insert_movie_recommendations(conn, recommendations):
                 RETURNING id;
             """
             for movie, poster, overview, genres, imdb_rating, trailer_url, cast in recommendations:
-                st.write(f"Processing movie: {movie}")
-                if not all([movie, poster, overview, genres, imdb_rating, trailer_url, cast]):
-                    st.error(f"Incomplete data for {movie}. Skipping.")
-                    continue
-                st.write(f"Inserting data: (movie_name={movie}, poster_url={poster}, overview={overview}, genres={genres}, imdb_rating={imdb_rating}, trailer_url={trailer_url}, cast={cast})")
-                try:
+                if all([movie, poster, overview, genres, imdb_rating, trailer_url, cast]):
                     cur.execute(insert_query, (movie, poster, overview, genres, imdb_rating, trailer_url, cast))
-                    conn.commit()
-                    st.success(f"Inserted {movie} into the database successfully!")
-                except Exception as e:
-                    st.error(f"Error during insert for {movie}: {e}")
-                    st.write(f"Details: {e}")
-                    conn.rollback()
-
-    except psycopg2.Error as e:
+            conn.commit()
+    except Exception:
         conn.rollback()
-        st.error(f"Error inserting data: {e.pgcode} - {e.pgerror}")
-        st.write(f"Details: {e}")
-
-    except Exception as e:
-        conn.rollback()
-        st.error(f"Error inserting data: {e}")
-        st.write(f"Details: {e}")
-
 
 # Encode the local image to base64
 def get_base64_image(file_path):
@@ -100,15 +77,8 @@ def fetch_movie_details(movie_title):
 
                 return poster_url, overview, genres, imdb_rating, trailer_url, cast
         return None, "Overview not available.", "N/A", "N/A", None, "Cast not available."
-    except requests.exceptions.Timeout:
-        st.error("The request to fetch movie details timed out. Please try again later.")
-        return None, "Overview not available due to timeout.", "N/A", "N/A", None, "Cast not available."
-    except requests.exceptions.RequestException as e:
-        # Handle quota limit or other request errors gracefully
-        st.error(f"An error occurred: {e}")
-        if "quota" in str(e).lower():
-            st.warning("YouTube API quota reached. Skipping trailer URL.")
-        return None, "Overview not available due to an error.", "N/A", "N/A", None, "Cast not available."
+    except:
+         return None, "Overview not available due to an error.", "N/A", "N/A", None, "Cast not available."
 
 def fetch_imdb_rating(imdb_id):
     """
@@ -361,7 +331,8 @@ selected_movie_name = st.selectbox(
 if selected_movie_name:
     if st.button('Recommend'):
         recommendations = recommend(selected_movie_name)
-        st.write("### Recommended Movies:")
+        conn = connect_to_db()
+        insert_movie_recommendations(conn, recommendations)
 
         for movie, poster, overview, genres, imdb_rating, trailer_url, cast in recommendations:
             with st.container():
@@ -414,14 +385,6 @@ if selected_movie_name:
                         )
                     else:
                         st.write("Trailer not available.")
-        conn = connect_to_db()
-
-        # Insert movie recommendations into the database
-        insert_movie_recommendations(conn, recommendations)
-
-        # Close the database connection if it was establishedd
-        if conn:
-            conn.close()
 
 
 st.markdown("""
