@@ -419,7 +419,7 @@ if selected_movie_name:
         # Insert movie recommendations into the database
         insert_movie_recommendations(conn, recommendations)
 
-        # Close the database connection if it was established
+        # Close the database connection if it was establishedd
         if conn:
             conn.close()
 
