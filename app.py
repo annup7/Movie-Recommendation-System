@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 import base64
 import psycopg2
+st.set_page_config(layout="wide")
 
 DATABASE_URL = "postgresql://neondb_owner:gF0iuBzlO5Yk@ep-morning-river-a19sgi22.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 
@@ -123,6 +124,18 @@ movies = pd.DataFrame(movies_dict)
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    /* Hide Streamlit header and footer */
+    header {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+
+    /* Hide the hamburger menu */
+    .css-1rs6os {{visibility: hidden;}}
+
+    /* Adjust the padding to ensure content aligns correctly */
+    .css-1d391kg {{
+        padding-top: 0;
+    }}
             
      /* Apply Poppins font to all elements */
     body, .css-1d391kg, .css-1aumxhk, .css-1daw9f6, .css-1ysk81j, .stApp, [class*="st"] {{
@@ -137,7 +150,7 @@ st.markdown(f"""
     .navbar {{
         width: 100%;
         background-color: rgba(0, 0, 0, 0.8);
-        padding: 1px 25px;
+        padding: 0px 25px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         display: flex;
         justify-content: space-between;
@@ -149,21 +162,21 @@ st.markdown(f"""
     }}
     .navbar img {{
         height: 35px;
-        margin-top: 68px;
+        margin-top: 20px;
         width: 40px;
         object-fit: cover;  /* Adjust to move the image down */
         border-radius: 50%;
     }}
     .navbar .title {{
-        font-size: 1.8em;
+        font-size: 2.0em;
         font-weight: bold;
         color: white;
         margin-left: 8px;
-        margin-top: 70px;  /* Adjust to move the title down */
+        margin-top: 20px;  /* Adjust to move the title down */
     }}
     
     .main {{
-        margin-top: 30px; /* Adjust for navbar height */
+        margin-top: 10px; /* Adjust for navbar height */
         padding: 10px;  /* Adds some space around content */
     }}
 
@@ -257,26 +270,24 @@ st.markdown(f"""
     }}
 
     @media (max-width: 576px) {{
-        .main{{
+        .navbar {{
             display: flex;
-            justify-content: center;
             align-items: center;
-            flex-direction: column;
-            text-align: center;
-            margin-top: 0; /* Adjust for navbar height */
-            padding: 10px;  /* Adds some space around content */
-            
-        }}
+            padding: 0px 25px;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            }}
         .navbar .title {{
-        font-size: 1.4em;
-        font-weight: bold;
-        color: white;
-        margin-left: 10px;
-        margin-top: 70px;
+            font-size: 2.0em;
+            font-weight: bold;
+            color: white;
+            margin-left: 10px;
+            margin-top: 15px;
         }}
         .navbar img {{
-            height: 35px;
-        margin-top: 65px;
+            height: 75px;
+        margin-top: 15px;
         }}
         .footer {{
             font-size: 10px;
