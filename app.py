@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 import base64
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 import os
 
@@ -14,7 +15,7 @@ st.set_page_config(layout="wide")
 def connect_to_db():
     """Establishes a connection to the PostgreSQL database."""
     try:
-        conn = psycopg2.connect(dsn=os.getenv('DATABASE_URL'))
+        conn = psycopg2.connect(dsn=os.getenv('DATABASE_URL'), cursor_factory=RealDictCursor)
         return conn
     except Exception:
         return None
