@@ -4,18 +4,14 @@ import pandas as pd
 import requests
 import base64
 import psycopg2
-from psycopg2.extras import RealDictCursor
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
 st.set_page_config(layout="wide")
+
+DATABASE_URL = "postgresql://neondb_owner:gF0iuBzlO5Yk@ep-morning-river-a19sgi22.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 
 def connect_to_db():
     """Establishes a connection to the PostgreSQL database."""
     try:
-        conn = psycopg2.connect(dsn=os.getenv('DATABASE_URL'), cursor_factory=RealDictCursor)
+        conn = psycopg2.connect(DATABASE_URL)
         return conn
     except Exception:
         return None
