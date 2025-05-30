@@ -37,6 +37,8 @@ pip install -r requirements.txt
 3. **Run the Streamlit App**
 streamlit run app.py
 
+---
+
 ## 🔍 How It Works
 
 1. User selects a movie from the dropdown or search bar
@@ -44,6 +46,8 @@ streamlit run app.py
 3. Top N most similar movies are retrieved using Nearest Neighbors
 4. Poster images and movie titles are displayed dynamically
 
-👨‍💻 Author
+---
+
+## 👨‍💻 Author
 Anup Nalawade
 📧 anupnalawadee@gmail.com
