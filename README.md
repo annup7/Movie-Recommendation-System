@@ -1,4 +1,4 @@
-# 🎬 Movie Recommendation System
+# 🎬 CINEXA: Movie Recommendation System
 
 A content-based movie recommendation system where users can select a movie and receive a list of similar movies based on plot summaries and tags. The system uses cosine similarity and the Nearest Neighbors algorithm to generate real-time recommendations through an interactive Streamlit web app.
 
